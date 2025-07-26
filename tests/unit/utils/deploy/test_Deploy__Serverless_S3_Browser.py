@@ -1,10 +1,9 @@
-from unittest                                                               import TestCase
-from osbot_aws.deploy.Deploy_Lambda                                         import Deploy_Lambda
-from osbot_utils.utils.Objects                                              import __
-from osbot_serverless_s3_browser.utils.deploy.Deploy__Serverless_S3_Browser import Deploy__Serverless_S3_Browser
-from osbot_serverless_s3_browser.utils.deploy.Schema__AWS_Setup__Serverless_S3_Browser import \
-    Schema__AWS_Setup__Serverless_S3_Browser
-from tests.s3_browser__objs_for_tests                                       import setup_local_stack, S3_BROWSER__TEST__AWS_ACCOUNT_ID, S3_BROWSER__TEST__AWS_DEFAULT_REGION
+from unittest                                                                           import TestCase
+from osbot_aws.deploy.Deploy_Lambda                                                     import Deploy_Lambda
+from osbot_utils.utils.Objects                                                          import __
+from osbot_serverless_s3_browser.utils.deploy.Deploy__Serverless_S3_Browser             import Deploy__Serverless_S3_Browser
+from osbot_serverless_s3_browser.utils.deploy.Schema__AWS_Setup__Serverless_S3_Browser  import Schema__AWS_Setup__Serverless_S3_Browser
+from tests.s3_browser__objs_for_tests                                                   import setup_local_stack, S3_BROWSER__TEST__AWS_ACCOUNT_ID, S3_BROWSER__TEST__AWS_DEFAULT_REGION
 
 
 class test_Deploy__Serverless_S3_Browser(TestCase):
@@ -29,7 +28,9 @@ class test_Deploy__Serverless_S3_Browser(TestCase):
                                  bucket__osbot_lambdas__name   = '000022220000--osbot-lambdas--eu-west-2',
                                  current_aws_region            = 'eu-west-2'                             )
 
-    def test_2__deploy(self):
+    def test_2_upload_lambda_dependencies_to_s3(self):
+        pass
+    def test_3__deploy(self):
         with self.deploy_s3_browser as _:
             assert _.lambda_function().exists() is False
             result = _.deploy()

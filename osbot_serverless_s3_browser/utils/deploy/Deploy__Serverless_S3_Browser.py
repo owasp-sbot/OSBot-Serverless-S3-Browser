@@ -1,5 +1,6 @@
 from osbot_aws.AWS_Config                                                               import AWS_Config
 from osbot_aws.deploy.Deploy_Lambda                                                     import Deploy_Lambda
+from osbot_aws.helpers.Lambda_Upload_Package import Lambda_Upload_Package
 from osbot_utils.decorators.methods.cache_on_self                                       import cache_on_self
 from osbot_utils.helpers.Safe_Id                                                        import Safe_Id
 from osbot_utils.type_safe.Type_Safe                                                    import Type_Safe
@@ -29,9 +30,16 @@ class Deploy__Serverless_S3_Browser(Type_Safe):
     def deploy(self):
         with self.deploy_lambda() as _:
             result = _.update()
-            if result != "Successful":
-                raise Exception(f"Lambda update failed: {result}")
-            return True
+            print(f"***** : {result}")
+            if result == "Successful":
+                return True
+            if result == 'Pending':
+                print(">>>>>>> Pending result >>>> going to wait a bit more")
+                wait_result = self.lambda_function().wait_for_function_update_to_complete()
+                print(f">>>>>>>> WAIT RESULT: {wait_result}")                           # todo add check here
+                return True
+            raise Exception(f"Lambda update failed: {result}")
+
 
     def lambda_name(self):
         return f'{BASE__LAMBDA_NAME}__{self.stage}'
@@ -55,3 +63,9 @@ class Deploy__Serverless_S3_Browser(Type_Safe):
                 if result.get('status') == 'ok':
                     _.bucket__osbot_lambdas__exists = True
         return aws_setup
+
+    def upload_lambda_dependencies_to_s3(self):
+        packages = ['fastapi']
+        lambda_upload_package = Lambda_Upload_Package()
+        for package in packages:
+            return lambda_upload_package.install_locally(package)
