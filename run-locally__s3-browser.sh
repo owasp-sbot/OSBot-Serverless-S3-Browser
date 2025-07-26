@@ -1,0 +1,1 @@
+uvicorn osbot_serverless_s3_browser.lambdas.handler:app --reload --host 0.0.0.0 --port 10003
