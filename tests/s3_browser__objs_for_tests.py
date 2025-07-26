@@ -6,8 +6,8 @@ from osbot_utils.type_safe.Type_Safe                                import Type_
 from starlette.testclient                                           import TestClient
 from osbot_serverless_s3_browser.core.fast_api.S3_Browser__Fast_API import S3_Browser__Fast_API
 
-S3_BROWSER__TEST__AWS_ACCOUNT_ID     = '000022220000'
-S3_BROWSER__TEST__AWS_DEFAULT_REGION = 'eu-west-2'                  # default to London
+S3_BROWSER__TEST__AWS_ACCOUNT_ID     = '000000000000'               # default local-stack account id for lambdas
+S3_BROWSER__TEST__AWS_DEFAULT_REGION = 'us-east-1'                  # default local-stack region for lambdas
 
 class S3_Browser__Test_APIs(Type_Safe):
     fast_api        : S3_Browser__Fast_API  = None

@@ -1,9 +1,11 @@
 from unittest                                                                           import TestCase
+from osbot_utils.utils.Misc                                                             import list_set
 from osbot_aws.deploy.Deploy_Lambda                                                     import Deploy_Lambda
 from osbot_utils.utils.Objects                                                          import __
 from osbot_serverless_s3_browser.utils.deploy.Deploy__Serverless_S3_Browser             import Deploy__Serverless_S3_Browser
 from osbot_serverless_s3_browser.utils.deploy.Schema__AWS_Setup__Serverless_S3_Browser  import Schema__AWS_Setup__Serverless_S3_Browser
 from tests.s3_browser__objs_for_tests                                                   import setup_local_stack, S3_BROWSER__TEST__AWS_ACCOUNT_ID, S3_BROWSER__TEST__AWS_DEFAULT_REGION
+
 
 
 class test_Deploy__Serverless_S3_Browser(TestCase):
@@ -15,8 +17,8 @@ class test_Deploy__Serverless_S3_Browser(TestCase):
     def test_deploy_lambda(self):
         with self.deploy_s3_browser.deploy_lambda() as _:
             assert type(_) is Deploy_Lambda
-            assert _.lambda_name()     == 'serverless-s3-browser__dev'
-            assert _.package.s3_bucket == '000022220000--osbot-lambdas--eu-west-2'
+            assert _.lambda_name()     == 'serverless_s3_browser__dev'
+            assert _.package.s3_bucket == '000000000000--osbot-lambdas--us-east-1'
             assert _.package.s3_bucket == f'{S3_BROWSER__TEST__AWS_ACCOUNT_ID}--osbot-lambdas--{S3_BROWSER__TEST__AWS_DEFAULT_REGION}'
 
     # tests for main methods
@@ -25,17 +27,45 @@ class test_Deploy__Serverless_S3_Browser(TestCase):
         with self.deploy_s3_browser.setup_aws_environment() as _:
             assert type(_) is Schema__AWS_Setup__Serverless_S3_Browser
             assert _.obj() == __(bucket__osbot_lambdas__exists = True                                    ,
-                                 bucket__osbot_lambdas__name   = '000022220000--osbot-lambdas--eu-west-2',
-                                 current_aws_region            = 'eu-west-2'                             )
+                                 bucket__osbot_lambdas__name   = '000000000000--osbot-lambdas--us-east-1',
+                                 current_aws_region            = 'us-east-1'                             )
 
     def test_2_upload_lambda_dependencies_to_s3(self):
-        pass
-    def test_3__deploy(self):
         with self.deploy_s3_browser as _:
-            assert _.lambda_function().exists() is False
-            result = _.deploy()
-            print(result)
-            assert _.lambda_function().exists() is True
-            assert _.lambda_function().delete() is True
-            assert _.lambda_function().exists() is False
+            status__packages = _.upload_lambda_dependencies_to_s3()
+            for package_name, status__package in status__packages.items():
+                assert package_name                                   in ['mangum', 'osbot-fast-api==0.7.32']
+                assert status__package.get('result__install_locally') is True
+                assert status__package.get('result__upload_to_s3'   ) is True
 
+    def test_3__create_or_update__lambda_function(self):
+        with self.deploy_s3_browser as _:
+            #assert _.lambda_function().exists() is False
+            assert _.deploy_lambda().lambda_name()       == 'serverless_s3_browser__dev'
+            assert _.deploy_lambda().package.lambda_name == 'serverless_s3_browser__dev'
+            assert _.create_or_update__lambda_function() is True
+
+            assert _.lambda_function().exists() is True
+            assert _.lambda_function().invoke().get('errorMessage') == ('The adapter was unable to infer a handler to use for the '
+                                                                        'event. This is likely related to how the Lambda function '
+                                                                        'was invoked. (Are you testing locally? Make sure the '
+                                                                        'request payload is valid for a supported handler.)')
+
+            #assert _.lambda_function().delete() is True
+            # assert _.lambda_function().exists() is False
+
+            # lambdas-dependencies/osbot-fast-api==0.7.32.zip
+            # osbot-fast-api==0.7.32
+
+    def test_4__create__lambda_function__url(self):
+        with self.deploy_s3_browser as _:
+            function_url = _.create__lambda_function__url()
+            assert function_url.endswith('us-east-1.localhost.localstack.cloud:4566/')
+            #_.lambda_function().function_url_delete()
+
+
+    def test_99_check_deployment_files(self):
+        with self.deploy_s3_browser as _:
+            with _.s3() as _:
+                dependencies_zips = _.folder_files('000000000000--osbot-lambdas--us-east-1', 'lambdas-dependencies')
+                assert dependencies_zips == ['mangum.zip', 'osbot-fast-api==0.7.32.zip']
