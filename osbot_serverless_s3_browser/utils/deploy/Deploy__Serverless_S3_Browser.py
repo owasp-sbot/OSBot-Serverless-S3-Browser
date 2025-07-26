@@ -35,7 +35,7 @@ class Deploy__Serverless_S3_Browser(Type_Safe):
                 return True
             if result == 'Pending':
                 print(">>>>>>> Pending result >>>> going to wait a bit more")
-                wait_result = self.lambda_function().wait_for_function_update_to_complete(wait_time=0.5)
+                wait_result = self.lambda_function().wait_for_function_update_to_complete(wait_time=0.5)                # todo: see if there a is a better to proactively handle the first install (I think the delay that happens on first install is caused by the download of the docker image for running the lambda inside localstack)
                 print(f">>>>>>>> WAIT RESULT: {wait_result}")                           # todo add check here
                 return True
             raise Exception(f"Lambda update failed: {result}")
