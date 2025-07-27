@@ -1,3 +1,8 @@
+from osbot_utils.helpers.Random_Guid import Random_Guid
+from osbot_utils.utils.Env import get_env
+
+from osbot_fast_api.api.Fast_API import ENV_VAR__FAST_API__AUTH__API_KEY__NAME, ENV_VAR__FAST_API__AUTH__API_KEY__VALUE
+
 from osbot_aws.AWS_Config                                                               import AWS_Config
 from osbot_aws.deploy.Deploy_Lambda                                                     import Deploy_Lambda
 from osbot_aws.helpers.Lambda_Upload_Package                                            import Lambda_Upload_Package
@@ -13,11 +18,19 @@ BASE__LAMBDA_NAME  = 'serverless_s3_browser'        # make this a Safe_Str__Lamb
 
 
 class Deploy__Serverless_S3_Browser(Type_Safe):
-    stage : Safe_Id = Safe_Id('dev')
+    stage    : Safe_Id = Safe_Id('dev')
 
     @cache_on_self
     def aws_config(self):
         return AWS_Config()
+
+    @cache_on_self
+    def api_key__name(self):
+        return get_env(ENV_VAR__FAST_API__AUTH__API_KEY__NAME, "api_key__name")
+
+    @cache_on_self
+    def api_key__value (self):
+        return get_env(ENV_VAR__FAST_API__AUTH__API_KEY__VALUE, Random_Guid())
 
     @cache_on_self
     def s3(self):
@@ -27,9 +40,12 @@ class Deploy__Serverless_S3_Browser(Type_Safe):
     def deploy_lambda(self):
         with Deploy_Lambda(run, lambda_name=self.lambda_name()) as _:
             _.add_osbot_aws()
+            _.set_env_variable(ENV_VAR__FAST_API__AUTH__API_KEY__NAME , self.api_key__name ())
+            _.set_env_variable(ENV_VAR__FAST_API__AUTH__API_KEY__VALUE, self.api_key__value())
             return _
 
     # main methods
+
 
     def create_or_update__lambda_function(self):
         with self.deploy_lambda() as _:
