@@ -2,12 +2,12 @@ from unittest                                                                   
 import requests
 from osbot_utils.utils.Env                                                              import get_env
 from osbot_fast_api.api.Fast_API                                                        import ENV_VAR__FAST_API__AUTH__API_KEY__VALUE, ENV_VAR__FAST_API__AUTH__API_KEY__NAME
-from osbot_utils.utils.Dev                                                              import pprint
 from osbot_aws.deploy.Deploy_Lambda                                                     import Deploy_Lambda
 from osbot_utils.utils.Objects                                                          import __
 from osbot_serverless_s3_browser.utils.Version                                          import version__osbot_serverless_s3_browser
 from osbot_serverless_s3_browser.utils.deploy.Deploy__Serverless_S3_Browser             import Deploy__Serverless_S3_Browser
 from osbot_serverless_s3_browser.utils.deploy.Schema__AWS_Setup__Serverless_S3_Browser  import Schema__AWS_Setup__Serverless_S3_Browser
+from osbot_serverless_s3_browser.utils.testing.skip_tests import skip__if_not__in_github_actions
 from tests.s3_browser__objs_for_tests                                                   import setup_local_stack, S3_BROWSER__TEST__AWS_ACCOUNT_ID, S3_BROWSER__TEST__AWS_DEFAULT_REGION
 
 
@@ -15,6 +15,7 @@ from tests.s3_browser__objs_for_tests                                           
 class test_Deploy__Serverless_S3_Browser(TestCase):
     @classmethod
     def setUpClass(cls):
+        skip__if_not__in_github_actions()
         setup_local_stack()                                                 # deploy lambda to localstack
         cls.deploy_s3_browser = Deploy__Serverless_S3_Browser()
 
