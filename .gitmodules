@@ -7,3 +7,6 @@
 [submodule "modules/OSBot-Fast-API-Serverless"]
 	path = modules/OSBot-Fast-API-Serverless
 	url = git@github.com:owasp-sbot/OSBot-Fast-API-Serverless.git
+[submodule "modules/OSBot-Utils"]
+	path = modules/OSBot-Utils
+	url = git@github.com:owasp-sbot/OSBot-Utils.git
