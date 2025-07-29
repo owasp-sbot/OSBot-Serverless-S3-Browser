@@ -1,6 +1,6 @@
 from osbot_aws.aws.lambda_.boto3__lambda import load_dependencies
-
-LAMBDA_DEPENDENCIES =  ['osbot-fast-api==0.7.32', 'mangum'] #'fastapi',
+#
+LAMBDA_DEPENDENCIES =  ['osbot-fast-api-serverless']
 
 load_dependencies(LAMBDA_DEPENDENCIES)
 

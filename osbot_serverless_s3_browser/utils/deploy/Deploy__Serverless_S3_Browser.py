@@ -1,3 +1,20 @@
+from osbot_fast_api_serverless.deploy.Deploy__Serverless__Fast_API import Deploy__Serverless__Fast_API
+from osbot_serverless_s3_browser.fast_api.lambda_handler           import run
+
+LAMBDA_NAME__SERVERLESS_S3_BROWSER         = 'serverless-s3-browser'
+LAMBDA_DEPENDENCIES__SERVERLESS_S3_BROWSER = ['osbot-fast-api-serverless']
+
+class Deploy__Serverless_S3_Browser(Deploy__Serverless__Fast_API):
+
+    def handler(self):
+        return run
+
+    def lambda_dependencies(self):
+        return LAMBDA_DEPENDENCIES__SERVERLESS_S3_BROWSER
+
+    def lambda_name(self):
+        return LAMBDA_NAME__SERVERLESS_S3_BROWSER
+
 # from osbot_utils.helpers.Random_Guid                                                    import Random_Guid
 # from osbot_utils.utils.Env                                                              import get_env
 # from osbot_fast_api.api.Fast_API                                                        import ENV_VAR__FAST_API__AUTH__API_KEY__NAME, ENV_VAR__FAST_API__AUTH__API_KEY__VALUE
