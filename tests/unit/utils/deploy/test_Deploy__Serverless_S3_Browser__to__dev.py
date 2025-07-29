@@ -1,5 +1,6 @@
 from unittest                                                               import TestCase
 from osbot_fast_api_serverless.deploy.Deploy__Serverless__Fast_API          import DEFAULT__ERROR_MESSAGE__WHEN_FAST_API_IS_OK
+from osbot_fast_api_serverless.utils.testing.skip_tests                     import skip__if_not__in_github_actions
 from osbot_serverless_s3_browser.utils.Version                              import version__osbot_serverless_s3_browser
 from osbot_utils.utils.Misc                                                 import list_set
 from osbot_serverless_s3_browser.utils.deploy.Deploy__Serverless_S3_Browser import Deploy__Serverless_S3_Browser, LAMBDA_DEPENDENCIES__SERVERLESS_S3_BROWSER
