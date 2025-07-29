@@ -1,8 +1,5 @@
 # for main app
-osbot-utils
-osbot-aws
-osbot-fast-api
-mangum
+osbot-fast-api-serverless
 requests
 
 # for pytest
